@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">WordGame</string>
+    <string name="app_name">Word Game</string>
+    <string name="ready_n">Ready\n</string>
+    <string name="tap_button_to_nstart">Tap Button to\nStart</string>
+    <string name="start">Start</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
