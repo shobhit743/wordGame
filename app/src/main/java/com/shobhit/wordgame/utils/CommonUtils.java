@@ -12,16 +12,13 @@ public class CommonUtils {
 
   public static List<String> getListOfSentences(BreakIterator bi, String source) {
     List<String> mList = new ArrayList<>();
-    int counter = 0;
     bi.setText(source);
     int lastIndex = bi.first();
     while (lastIndex != BreakIterator.DONE) {
       int firstIndex = lastIndex;
       lastIndex = bi.next();
-
       if (lastIndex != BreakIterator.DONE) {
         mList.add(source.substring(firstIndex, lastIndex));
-        counter++;
       }
     }
     return mList;

@@ -9,6 +9,15 @@ public class IdName {
   private String name;
   private String correctName;
   private boolean valueInserted;
+  private int correctAnswer;
+
+  public int getCorrectAnswer() {
+    return correctAnswer;
+  }
+
+  public void setCorrectAnswer(int correctAnswer) {
+    this.correctAnswer = correctAnswer;
+  }
 
   public boolean isValueInserted() {
     return valueInserted;

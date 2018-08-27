@@ -21,7 +21,16 @@
         android:textColor="@color/black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
+    <Button
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:id="@+id/compare_answer"
+        android:layout_margin="20dp"
+        android:text="Compare Answer"
+        android:textAllCaps="false"
+        android:layout_width="match_parent"
+        android:background="@drawable/rounded_btn_drawable"
+        android:layout_height="wrap_content" />
     <Button
         android:textColor="@color/white"
         android:textSize="15sp"

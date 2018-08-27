@@ -8,18 +8,38 @@
     tools:context="com.shobhit.wordgame.view.MainActivity">
 <android.support.v7.widget.Toolbar
     android:id="@+id/mToolbar"
+    app:contentInsetStart="0dp"
+    app:contentInsetStartWithNavigation="0dp"
     android:layout_width="match_parent"
     android:background="@color/colorPrimaryDark"
     android:layout_height="?attr/actionBarSize">
     <RelativeLayout
-        android:padding="10dp"
         android:layout_width="match_parent"
+        android:paddingRight="10dp"
         android:layout_height="wrap_content">
+        <TextView
+            android:textColor="@color/white"
+            android:text="@string/app_name"
+            android:gravity="center_vertical"
+            android:textSize="18sp"
+            android:paddingLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_height="match_parent" />
         <TextView
             android:layout_alignParentEnd="true"
             android:text="Submit"
+            android:layout_centerVertical="true"
             android:textColor="@color/white"
             android:id="@+id/txt_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/iv_replay"
+            android:visibility="gone"
+            android:src="@drawable/ic_replay_white_24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
@@ -29,6 +49,7 @@
         android:layout_width="match_parent"
         android:scrollbars="none"
         android:layout_height="wrap_content">
+
           <FrameLayout
               android:id="@+id/frame_container"
               android:layout_width="match_parent"
