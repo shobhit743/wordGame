@@ -1,5 +1,6 @@
 package com.shobhit.wordgame.view
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -18,13 +19,12 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 import com.shobhit.wordgame.utils.CommonUtils.revealShow
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.view.KeyEvent
 
 
-class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
+class MainActivity : AppCompatActivity(), HasSupportFragmentInjector,MainFragment.EnableFloatingActionListener {
+
 
   @Inject
   lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Fragment>
@@ -46,6 +46,21 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
   }
 
+  override fun onEnableFloatingAction() {
+   showFloatingButton()
+  }
+
+  @SuppressLint("RestrictedApi")
+  private fun showFloatingButton(){
+    fabSubmit.visibility = View.VISIBLE
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    if (dialog != null && dialog!!.isShowing) {
+      dialog!!.dismiss()
+    }
+  }
 
   override fun supportFragmentInjector(): AndroidInjector<Fragment> {
     return dispatchingAndroidInjector
@@ -53,13 +68,14 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
 
   private fun initViews() {
     fabSubmit = findViewById(R.id.fab)
+    hideFloatingButton()
     fabSubmit.setOnClickListener {
       showGameEndDialog(getMainFragment()?.getGameScore()?.toString())
     }
     ivReplay = findViewById(R.id.iv_replay)
     ivReplay.setOnClickListener {
       ivReplay.visibility = View.GONE
-      fabSubmit.visibility = View.VISIBLE
+      hideFloatingButton()
       loadMainFragment()
     }
   }
@@ -70,6 +86,11 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
       return mainFragment as MainFragment
     }
     return null
+  }
+
+  @SuppressLint("RestrictedApi")
+  private fun hideFloatingButton(){
+    fabSubmit.visibility = View.GONE
   }
 
 
@@ -83,8 +104,8 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     btnCompareAnswer.setOnClickListener {
       CommonUtils.revealShow(view, false, dialog, fabSubmit)
       getMainFragment()?.setUpShowAdapterAnswer()
-      fabSubmit.visibility = View.GONE
-      ivReplay.visibility = View.VISIBLE
+      hideFloatingButton()
+     ivReplay.visibility = View.VISIBLE
     }
 
     val txtGameScore: TextView = view.findViewById(R.id.txt_game_score)
@@ -97,24 +118,16 @@ class MainActivity : AppCompatActivity(), HasSupportFragmentInjector {
     dialog.setOnKeyListener { dialogInterface, i, keyEvent -> false }
     dialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     dialog.show();
-
   }
 
   private fun loadMainFragment() {
-    supportFragmentManager.beginTransaction()
+      hideFloatingButton()
+      supportFragmentManager.beginTransaction()
         .setCustomAnimations(R.animator.fragment_slide_left_enter,
             R.animator.fragment_slide_left_exit,
             R.animator.fragment_slide_right_enter,
             R.animator.fragment_slide_right_exit)
         .replace(R.id.frame_container, MainFragment(), TAG).commit()
   }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    if (dialog != null && dialog!!.isShowing) {
-      dialog!!.dismiss()
-    }
-  }
-
 
 }

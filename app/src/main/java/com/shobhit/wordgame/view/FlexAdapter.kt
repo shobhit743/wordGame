@@ -51,29 +51,28 @@ class FlexAdapter(val mContext: Context, val mList: MutableList<IdName>, val bla
       holder.txtName.text = mList[holder.adapterPosition].name
       holder.txtName.setTextColor(ContextCompat.getColor(mContext, R.color.black))
     }
-    if(showAnswer){
+
+    if (showAnswer) {
       holder.itemView.setOnClickListener(null)
     }
-
-
-    if (showAnswer&&mList[holder.adapterPosition].isValueInserted) {
+    if (showAnswer && mList[holder.adapterPosition].isValueInserted) {
       holder.itemView.setOnClickListener(null)
       val spannableString = SpannableString(mList[holder.adapterPosition].name)
       if (mList[holder.adapterPosition].isValueInserted) {
         if (mList[holder.adapterPosition].correctAnswer == ANSWER_IS_CORRECT) {
-          spannableString.setSpan(RelativeSizeSpan(1.1f),0,mList[holder.adapterPosition].name.length,0)
+          spannableString.setSpan(RelativeSizeSpan(1.1f), 0, mList[holder.adapterPosition].name.length, 0)
           spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.colorPrimary)), 0, mList[holder.adapterPosition].name.length, 0)
         } else {
-          spannableString.setSpan(RelativeSizeSpan(1.1f),0,mList[holder.adapterPosition].name.length,0)
+          spannableString.setSpan(RelativeSizeSpan(1.1f), 0, mList[holder.adapterPosition].name.length, 0)
           spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.red)), 0, mList[holder.adapterPosition].name.length, 0)
           spannableString.setSpan(UnderlineSpan(), 0, mList[holder.adapterPosition].name.length, 0)
         }
       } else {
-        spannableString.setSpan(RelativeSizeSpan(1.1f),0,mList[holder.adapterPosition].name.length,0)
+        spannableString.setSpan(RelativeSizeSpan(1.1f), 0, mList[holder.adapterPosition].name.length, 0)
         spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(mContext, R.color.black)), 0, mList[holder.adapterPosition].name.length, 0)
         spannableString.setSpan(UnderlineSpan(), 0, mList[holder.adapterPosition].name.length, 0)
       }
-      holder.txtName.setText(spannableString)
+      holder.txtName.text = spannableString
     }
   }
 

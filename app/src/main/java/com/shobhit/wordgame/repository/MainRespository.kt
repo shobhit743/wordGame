@@ -36,7 +36,7 @@ constructor(val apiService: ApiService) {
           }
 
           override fun onError(e: Throwable) {
-
+            liveDataStr.value = null
           }
 
           override fun onComplete() {

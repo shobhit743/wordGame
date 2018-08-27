@@ -50,9 +50,9 @@ class AppModule() {
     val httpClient = OkHttpClient.Builder()
     httpClient.cache(cache)
     httpClient.addInterceptor(logging)
-    httpClient.readTimeout(180, TimeUnit.SECONDS)
-    httpClient.connectTimeout(180, TimeUnit.SECONDS)
-    httpClient.writeTimeout(180, TimeUnit.SECONDS)
+    httpClient.readTimeout(10, TimeUnit.SECONDS)
+    httpClient.connectTimeout(10, TimeUnit.SECONDS)
+    httpClient.writeTimeout(10, TimeUnit.SECONDS)
     httpClient.addInterceptor { chain ->
       val request = chain.request()
       chain.proceed(request)

@@ -3,6 +3,7 @@ package com.shobhit.wordgame.view
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -43,7 +44,7 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
   lateinit var apiService: ApiService
 
   private lateinit var flexAdapter: FlexAdapter
-  private lateinit var progressBar:ProgressBar
+  private lateinit var progressBar: ProgressBar
   private var mList: MutableList<IdName> = mutableListOf()
   private lateinit var mainViewModel: MainViewModel
   private lateinit var flexRecyclerView: RecyclerView
@@ -51,8 +52,9 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
   private var wordsMap = HashMap<Int, Array<String>>()
   private var selectedWordsListMap = HashMap<Int, String>()
   private var sentenceMap = HashMap<Int, String>()
-  private var mListSelected:MutableList<IdName> = mutableListOf()
-  var alertDialog:AlertDialog? = null
+  private var mListSelected: MutableList<IdName> = mutableListOf()
+  var alertDialog: AlertDialog? = null
+  private lateinit var enableFloatingActionListener: EnableFloatingActionListener
 
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +69,26 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
     super.onActivityCreated(savedInstanceState)
     setUpViewModel(savedInstanceState)
   }
+
+  override fun onBlackClick(idName: IdName, position: Int) {
+    showDialogBlank(position)
+  }
+
+  override fun onAttach(context: Context?) {
+    super.onAttach(context)
+    if(context is EnableFloatingActionListener){
+      enableFloatingActionListener = context
+    }
+  }
+
+  override fun onDestroyView() {
+    super.onDestroyView()
+    if (alertDialog != null && alertDialog!!.isShowing) {
+      alertDialog?.dismiss()
+    }
+  }
+
+
 
   private fun initViews(view: View) {
     progressBar = view.findViewById(R.id.progressbar)
@@ -99,33 +121,13 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
   }
 
 
-  override fun onBlackClick(idName: IdName, position: Int) {
-    showDialogBlank(position)
-  }
-
   private fun showDialogBlank(position: Int) {
     val alertDialogBuilder = AlertDialog.Builder(activity!!)
     val view = LayoutInflater.from(activity).inflate(R.layout.selected_word_layout, null)
     alertDialogBuilder.setView(view)
     val selectedWordAdapter = SelectedWordDialogAdapter(activity!!, mListSelected, object : SelectedWordDialogAdapter.SelectedWordDialogClick {
       override fun onSelectedWordDialog(idName: IdName) {
-        alertDialog?.dismiss()
-        idName.isBlank = true
-        idName.isValueInserted = true
-        idName.correctName = mList[position].correctName
-        idName.id = mList[position].id
-        if (selectedWordsListMap.containsKey(mList[position].id) && idName.name == mList[position].correctName) {
-          mainViewModel.gameScore++
-          idName.correctAnswer = flexAdapter.ANSWER_IS_CORRECT
-        } else {
-          if (mainViewModel.gameScore != 0) {
-            mainViewModel.gameScore--
-          }
-          idName.correctAnswer = flexAdapter.ANSWER_IS_WRONG
-        }
-        mList.removeAt(position)
-        mList.add(position, idName)
-        flexAdapter.notifyItemChanged(position)
+        updateAdapterDataOnSelect(idName, position)
       }
     })
     val recyclerView: RecyclerView = view.findViewById(R.id.selected_word_recycler)
@@ -136,27 +138,54 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
     alertDialog?.show()
   }
 
-  private fun setUpData(questionData: String?) {
-    CommonUtils.getListOfSentences(BreakIterator.getSentenceInstance(), questionData).forEachIndexed { index, s ->
-      if (CommonUtils.getListOfWords(s).isNotEmpty()) {
-        wordsMap.put(index, CommonUtils.getListOfWords(s))
-        sentenceMap.put(index, s)
+
+  private fun updateAdapterDataOnSelect(idName: IdName, position: Int) {
+    alertDialog?.dismiss()
+    idName.isBlank = true
+    idName.isValueInserted = true
+    idName.correctName = mList[position].correctName
+    idName.id = mList[position].id
+    if (selectedWordsListMap.containsKey(mList[position].id) && idName.name == mList[position].correctName) {
+      mainViewModel.gameScore++
+      idName.correctAnswer = flexAdapter.ANSWER_IS_CORRECT
+    } else {
+      if (mainViewModel.gameScore != 0) {
+        mainViewModel.gameScore--
       }
+      idName.correctAnswer = flexAdapter.ANSWER_IS_WRONG
     }
-    val wordStrMap = wordsMap
-    for (index in wordsMap.keys) {
-      if (wordsMap[index]!!.isNotEmpty()) {
-        val randomNumber = CommonUtils.getRandomDoubleBetweenRange(1, wordStrMap[index]!!.size - 1)
-        if (wordsMap.isNotEmpty() && wordsMap.containsKey(index)) {
-          selectedWordsListMap.put(index, wordsMap[index]!![randomNumber])
+    mList.removeAt(position)
+    mList.add(position, idName)
+    flexAdapter.notifyItemChanged(position)
+  }
+
+  private fun setUpData(questionData: String?) {
+    if(questionData != null) {
+      enableFloatingActionListener.onEnableFloatingAction()
+      CommonUtils.getListOfSentences(BreakIterator.getSentenceInstance(), questionData).forEachIndexed { index, s ->
+        if (CommonUtils.getListOfWords(s).isNotEmpty()) {
+          wordsMap.put(index, CommonUtils.getListOfWords(s))
+          sentenceMap.put(index, s)
         }
       }
+      val wordStrMap = wordsMap
+      for (index in wordsMap.keys) {
+        if (wordsMap[index]!!.isNotEmpty()) {
+          val randomNumber = CommonUtils.getRandomDoubleBetweenRange(1, wordStrMap[index]!!.size - 1)
+          if (wordsMap.isNotEmpty() && wordsMap.containsKey(index)) {
+            selectedWordsListMap.put(index, wordsMap[index]!![randomNumber])
+          }
+        }
+      }
+      randomiseSelectedWords()
+      setUpQuestionTextUI()
+    } else {
+      txtGameTitle.text = ""
+      Toast.makeText(activity,"Error Fetching Data",Toast.LENGTH_LONG).show()
     }
-    randomiseSelectedWords()
-    setUpQuestionTextUI()
-   }
+  }
 
-  private fun setUpQuestionTextUI(){
+  private fun setUpQuestionTextUI() {
     var sentenceOffset = 0
     for (index in sentenceMap.keys) {
       var offset = 0
@@ -188,10 +217,9 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
       sentenceOffset += sentence.length
     }
     flexAdapter.notifyDataSetChanged()
-
   }
 
-  private fun randomiseSelectedWords(){
+  private fun randomiseSelectedWords() {
     for ((key, value) in selectedWordsListMap) {
       val idName = IdName()
       idName.id = key
@@ -200,7 +228,6 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
       mListSelected.add(idName)
     }
     CommonUtils.randomize(mListSelected)
-
   }
 
   fun getGameScore(): Int {
@@ -211,11 +238,7 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
     flexRecyclerView.adapter = FlexAdapter(activity!!, mList, this, true)
   }
 
-  override fun onDestroyView() {
-    super.onDestroyView()
-    if(alertDialog!=null&&alertDialog!!.isShowing){
-      alertDialog?.dismiss()
-    }
+  interface EnableFloatingActionListener{
+    fun onEnableFloatingAction()
   }
-
 }
