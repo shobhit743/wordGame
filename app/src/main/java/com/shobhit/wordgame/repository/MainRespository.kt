@@ -25,7 +25,7 @@ constructor(val apiService: ApiService) {
 
           override fun onNext(data: Data) {
 
-            if (data?.query != null && data.query.pages != null) {
+            if (data.query != null && data.query.pages != null) {
               for (pageModel in data.query.pages.values) {
                 if (pageModel.extract != null) {
                    liveDataStr.value = (Html.fromHtml(pageModel.extract).toString())

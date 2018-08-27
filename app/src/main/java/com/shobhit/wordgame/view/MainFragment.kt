@@ -21,7 +21,6 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 
 import com.shobhit.wordgame.R
-import com.shobhit.wordgame.apiCalls.ApiService
 import com.shobhit.wordgame.model.IdName
 import com.shobhit.wordgame.utils.CommonUtils
 import com.shobhit.wordgame.viewModel.DaggerViewModelFactory
@@ -40,8 +39,6 @@ class MainFragment : Fragment(), FlexAdapter.OnBlankClickListener {
 
   @Inject
   lateinit var viewModelFactory: DaggerViewModelFactory
-  @Inject
-  lateinit var apiService: ApiService
 
   private lateinit var flexAdapter: FlexAdapter
   private lateinit var progressBar: ProgressBar
