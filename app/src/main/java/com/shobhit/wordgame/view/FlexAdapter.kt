@@ -23,8 +23,8 @@ class FlexAdapter(val mContext: Context, val mList: MutableList<IdName>, val bla
   var ANSWER_IS_WRONG = -1
 
 
-  override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): FlexViewHolder {
-    val view = LayoutInflater.from(parent?.context).inflate(R.layout.flex_layout_item_row, parent, false)
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlexViewHolder {
+    val view = LayoutInflater.from(parent.context).inflate(R.layout.flex_layout_item_row, parent, false)
     return FlexViewHolder(view)
   }
 

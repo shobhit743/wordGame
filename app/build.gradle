@@ -58,6 +58,7 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-android-processor:2.11"
     compile "com.google.dagger:dagger-android-support:2.11"
     implementation 'com.google.android:flexbox:1.0.0'
+    compile 'com.android.support:design:27.1.1'
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version" // use kapt for Kotlin
 
 }

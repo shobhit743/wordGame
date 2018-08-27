@@ -13,9 +13,9 @@ import kotlinx.android.synthetic.main.flex_layout_item_row.view.*
 /**
  * Created by shobhit on 26/08/18.
  */
-class SelectedWordDialogAdapter(val mContent:Context,val mList:MutableList<IdName>, val selectedWordDialogClick: SelectedWordDialogAdapter.SelectedWordDialogClick): RecyclerView.Adapter<SelectedWordDialogAdapter.SelectedViewHolder>() {
-  override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): SelectedViewHolder {
-   val view = LayoutInflater.from(parent?.context).inflate(R.layout.flex_layout_item_row,parent,false)
+class SelectedWordDialogAdapter(val mContent: Context, val mList: MutableList<IdName>, val selectedWordDialogClick: SelectedWordDialogAdapter.SelectedWordDialogClick) : RecyclerView.Adapter<SelectedWordDialogAdapter.SelectedViewHolder>() {
+  override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectedViewHolder {
+    val view = LayoutInflater.from(parent.context).inflate(R.layout.selected_word_dialog_layout, parent, false)
     return SelectedViewHolder(view)
   }
 
@@ -26,15 +26,15 @@ class SelectedWordDialogAdapter(val mContent:Context,val mList:MutableList<IdNam
   override fun onBindViewHolder(holder: SelectedViewHolder, position: Int) {
     holder.txtLabel.text = mList[holder.adapterPosition].name
     holder.itemView.setOnClickListener {
-        selectedWordDialogClick.onSelectedWordDialog(mList[holder.adapterPosition])
+      selectedWordDialogClick.onSelectedWordDialog(mList[holder.adapterPosition])
     }
   }
 
-  class SelectedViewHolder(view:View):RecyclerView.ViewHolder(view){
+  class SelectedViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val txtLabel = view.findViewById<TextView>(R.id.txt_label)
   }
 
-  interface SelectedWordDialogClick{
+  interface SelectedWordDialogClick {
     fun onSelectedWordDialog(idName: IdName)
   }
 }
